@@ -59,6 +59,15 @@ class CategoryController extends Controller
 
         $category = Categories::find($category_id);
 
+        if($category == NULL ){
+            $data = [
+                'message' => 'Record does not exist',
+                'data' => [],
+                'error' => ['Sorry Category record doesnt Exist']
+            ];
+            return response()->json($data,400);
+        }
+
         $update = $category->update([
             'name' => $request->get('name'),
             'description' => $request->get('description')

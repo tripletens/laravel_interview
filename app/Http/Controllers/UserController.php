@@ -37,13 +37,12 @@
             }
 
             $data = [
-                'message' => "Token Generated",
-                'data' => ['token' => compact('token')],
+                'message' => "Login Successful",
+                'data' => [compact('token')],
                 'error' => []
             ];
 
-            return response()->json();
-        }
+            return response()->json($data);
 
         public function register(Request $request)
         {
@@ -54,7 +53,12 @@
             ]);
 
             if($validator->fails()){
-                return response()->json($validator->errors(), 400);
+                $data = [
+                    'message' => "Token Generated",
+                    'data' => [],
+                    'error' => $validator->errors()
+                ];
+                return response()->json($data, 400);
             }
 
             $user = User::create([
@@ -68,7 +72,13 @@
             // create the event 
             event( new UserRegistrationEvent($user));
             
-            return response()->json(compact('user','token'),201);
+            $data = [
+                'message' => "User Successfully Registered",
+                'data' => [compact('user','token')],
+                'error' => $validator->errors()
+            ];
+
+            return response()->json($data,201);
         }
 
         public function getAuthenticatedUser()
@@ -76,20 +86,53 @@
                 try {
 
                         if (! $user = JWTAuth::parseToken()->authenticate()) {
-                                return response()->json(['user_not_found'], 404);
+                            $data = [
+                                'message' => "User not Found",
+                                'data' => [],
+                                'error' => ['user_not_found']
+                            ];
+                            return response()->json($data, 404);
+
                         }
 
                     } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
 
-                        return response()->json(['token_expired'], $e->getStatusCode());
+                        $data = [
+                            'message' => "Token Expired",
+                            'data' => [],
+                            'error' => ['token_expired']
+                        ];
+                        return response()->json($data, $e->getStatusCode());
 
                     } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
 
+                        $data = [
+                            'message' => "Token Invalid",
+                            'data' => [],
+                            'error' => ['token_invalid']
+                        ];
+                       
                         return response()->json(['token_invalid'], $e->getStatusCode());
 
                     } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
 
-                        return response()->json(['token_absent'], $e->getStatusCode());
+                        $data = [
+                            'message' => "Token Absent",
+                            'data' => [],
+                            'error' => ['token_absent']
+                        ];
+
+                        return response()->json($data, $e->getStatusCode());
+
+                    }
+
+                    $data = [
+                        'message' => "User Details",
+                        'data' => [compact('user')],
+                        'error' => []
+                    ];
+
+                    return response()->json($data);
 
                     }
 

@@ -57,7 +57,7 @@ class ProductsController extends Controller
 
         if($validator->fails()){
             $data = [
-                'message' => "An Error Occured",
+                'message' => "Validation Error",
                 'data' => [],
                 'error' => $validator->errors()
             ];
@@ -67,6 +67,15 @@ class ProductsController extends Controller
         $product_id = $request->get('product_id');
 
         $product = Products::find($product_id);
+
+        if($product == null){
+            $data = [
+                'message' => "Product doesnt Exist",
+                'data' => [],
+                'error' => ['Product not found']
+            ];
+            return response()->json($data, 400);
+        }
 
         $update = $product->update([
             'name' => $request->get('name'),
@@ -110,6 +119,15 @@ class ProductsController extends Controller
         $product_id = $request->get('product_id');
 
         $product = Products::find($product_id);
+
+        if($product == null){
+            $data = [
+                'message' => "Product doesnt Exist",
+                'data' => [],
+                'error' => ['Product not found']
+            ];
+            return response()->json($data, 400);
+        }
 
         $delete = $product->delete();
 
