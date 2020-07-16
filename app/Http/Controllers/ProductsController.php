@@ -77,7 +77,6 @@ class ProductsController extends Controller
             return response()->json($data, 400);
         }
 
-
         $update = $product->update([
             'name' => $request->get('name'),
             'description' => $request->get('description'),

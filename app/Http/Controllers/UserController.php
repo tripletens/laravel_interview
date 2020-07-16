@@ -43,7 +43,6 @@
             ];
 
             return response()->json($data);
-        }
 
         public function register(Request $request)
         {
@@ -93,6 +92,7 @@
                                 'error' => ['user_not_found']
                             ];
                             return response()->json($data, 404);
+
                         }
 
                     } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
@@ -111,7 +111,7 @@
                             'data' => [],
                             'error' => ['token_invalid']
                         ];
-                        
+                       
                         return response()->json(['token_invalid'], $e->getStatusCode());
 
                     } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
@@ -133,5 +133,9 @@
                     ];
 
                     return response()->json($data);
+
+                    }
+
+                    return response()->json(compact('user'));
         }
     }
